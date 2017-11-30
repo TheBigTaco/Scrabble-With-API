@@ -7,18 +7,28 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Rename = exports.Rename = function Rename() {
-  _classCallCheck(this, Rename);
+var FindEpicodus = exports.FindEpicodus = function FindEpicodus() {
+  _classCallCheck(this, FindEpicodus);
 };
 
 },{}],2:[function(require,module,exports){
 "use strict";
 
-var _Rename = require("./../js/Rename.js");
+var _FindEpicodus = require("./../js/FindEpicodus.js");
 
 $(document).ready(function () {
-  console.log("Loaded");
-  $("#test").text("Template Working");
+  $("#button").click(function () {
+    var word = $("#input").val();
+    $.get("http://api.wordnik.com:80/v4/word.json/" + word + "?useCanonical=false&includeSuggestions=true&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5").then(function (response) {
+      if (response.canonicalForm != undefined) {
+        $("#output").text("" + response.canonicalForm);
+      } else {
+        $("#output").text("That ain't a word");
+      }
+    }).fail(function (error) {
+      alert("Please");
+    });
+  });
 });
 
-},{"./../js/Rename.js":1}]},{},[2]);
+},{"./../js/FindEpicodus.js":1}]},{},[2]);

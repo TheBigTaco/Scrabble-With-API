@@ -1,4 +1,4 @@
-import { FindEpicodus } from "./../js/FindEpicodus.js";
+import { Epicrabble } from "./../js/Epicrabble.js";
 
 $(document).ready(function(){
   $("#button").click(function(){
