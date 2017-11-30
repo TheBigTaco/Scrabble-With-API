@@ -6,6 +6,7 @@ export class Game {
     this.selectedLetter = [];
     this.word = "";
     this.totalLetters = ["A", "A", "A", "A", "A", "A", "A", "A", "A", "B", "B", "C", "C", "D", "D", "D", "D", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "E", "F", "F", "G", "G", "G", "H", "H", "I", "I", "I", "I", "I", "I", "I", "I", "I", "J", "K", "L", "L", "L", "L", "M", "M", "N", "N", "N", "N", "N", "N", "O", "O", "O", "O", "O", "O", "O", "O", "P", "P", "Q", "R", "R", "R", "R", "R", "R", "S", "S", "S", "S", "T", "T", "T", "T", "T", "T", "U", "U", "U", "U", "V", "V", "W", "W", "X", "Y", "Y", "Z"];
+    //TODO: Add blanks
   }
   generatePlayers(amount){
     for (var i = 0; i < amount; i++) {
@@ -16,19 +17,27 @@ export class Game {
   generateLetters(draw) {
     for (var i = 0; i < this.players.length; i++) {
       if(draw) {
-        let currentHandSize = 7 - this.players[i].hand.length;
-        for (var i = 0; i < currentHandSize; i++) {
-          if(this.totalLetters >= 1) {
+        console.log(this.players[i].hand);
+        let newHand = this.players[i].hand.filter(function(element){
+          return element !== null;
+        });
+        console.log(newHand);
+        let currentHandSize = 7 - newHand.length;
+        this.players[i].hand = newHand;
+        for (var j = 0; j < currentHandSize; j++) {
+          if(this.totalLetters.length >= 1) {
             let randomNum = Math.floor(Math.random() * (this.totalLetters.length - .1));
-            let letter = this.totalLetters.splice(randomNum, 1);
+            let splice = this.totalLetters.splice(randomNum, 1);
+            let letter = splice.toString();
             this.players[i].hand.push(letter);
+            console.log(this.players[i].hand);
           }
         }
       } else {
-        for (var i = 0; i < 7; i++) {
+        for (var j = 0; j < 7; j++) {
           let randomNum = Math.floor(Math.random() * (this.totalLetters.length - .1));
           let letter = this.totalLetters.splice(randomNum, 1);
-          this.players[i].hand.push(letter);
+          this.players[i].hand.push(letter.toString());
         }
       }
     }
@@ -41,4 +50,11 @@ export class Player {
     this.hand = [];
     this.score = 0;
   }
+  getElements(response) {
+    if(response.entry_list.entry != undefined) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 }

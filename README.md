@@ -52,3 +52,5 @@ Scrabble Letters:
 5 points: K ×1
 8 points: J ×1, X ×1
 10 points: Q ×1, Z ×1
+
+Add blanks if time

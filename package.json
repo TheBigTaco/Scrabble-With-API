@@ -4,7 +4,8 @@
   "description": "A memory game",
   "main": "index.js",
   "scripts": {
-    "test": "karma start karma.conf.js"
+    "test": "karma start karma.conf.js",
+    "convert": "xml-js test.json --spaces 4"
   },
   "author": "",
   "license": "ISC",
@@ -34,5 +35,8 @@
     "karma-jquery": "^0.2.2",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "xml-js": "^1.5.2"
   }
 }
