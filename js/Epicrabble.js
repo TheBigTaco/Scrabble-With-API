@@ -17,11 +17,9 @@ export class Game {
   generateLetters(draw) {
     for (var i = 0; i < this.players.length; i++) {
       if(draw) {
-        console.log(this.players[i].hand);
         let newHand = this.players[i].hand.filter(function(element){
           return element !== null;
         });
-        console.log(newHand);
         let currentHandSize = 7 - newHand.length;
         this.players[i].hand = newHand;
         for (var j = 0; j < currentHandSize; j++) {
@@ -30,7 +28,6 @@ export class Game {
             let splice = this.totalLetters.splice(randomNum, 1);
             let letter = splice.toString();
             this.players[i].hand.push(letter);
-            console.log(this.players[i].hand);
           }
         }
       } else {
@@ -41,6 +38,17 @@ export class Game {
         }
       }
     }
+  }
+  generateBoard() {
+    let htmlString = "";
+    for (var j = 0; j < 15; j++) {
+      htmlString += `<div class = 'row'>`;
+      for (var i = 0; i < 15; i++) {
+        htmlString += `<div class='tile' x-coord="${j}" y-coord="${i}" letter=""></div>`
+      }
+      htmlString += `</div>`;
+    }
+    return htmlString;
   }
 }
 

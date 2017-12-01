@@ -35,11 +35,9 @@ var Game = exports.Game = function () {
     value: function generateLetters(draw) {
       for (var i = 0; i < this.players.length; i++) {
         if (draw) {
-          console.log(this.players[i].hand);
           var newHand = this.players[i].hand.filter(function (element) {
             return element !== null;
           });
-          console.log(newHand);
           var currentHandSize = 7 - newHand.length;
           this.players[i].hand = newHand;
           for (var j = 0; j < currentHandSize; j++) {
@@ -48,7 +46,6 @@ var Game = exports.Game = function () {
               var splice = this.totalLetters.splice(randomNum, 1);
               var letter = splice.toString();
               this.players[i].hand.push(letter);
-              console.log(this.players[i].hand);
             }
           }
         } else {
@@ -59,6 +56,19 @@ var Game = exports.Game = function () {
           }
         }
       }
+    }
+  }, {
+    key: "generateBoard",
+    value: function generateBoard() {
+      var htmlString = "";
+      for (var j = 0; j < 15; j++) {
+        htmlString += "<div class = 'row'>";
+        for (var i = 0; i < 15; i++) {
+          htmlString += "<div class='tile' x-coord=\"" + j + "\" y-coord=\"" + i + "\" letter=\"\"></div>";
+        }
+        htmlString += "</div>";
+      }
+      return htmlString;
     }
   }]);
 
@@ -7772,13 +7782,15 @@ var _Epicrabble = require("./../js/Epicrabble.js");
 var convert = require('xml-js');
 $(document).ready(function () {
   var game = new _Epicrabble.Game();
+  var temp = [];
   var word = "";
-  var counter = 0;
+  var currentLetter = "";
   $("#board").hide();
   $("#start-button").click(function () {
     var playerCount = parseInt($("#player-count").val());
     game.generatePlayers(1);
     game.generateLetters();
+    $(".board").append(game.generateBoard());
     $("#board").show();
     $("#start-menu").hide();
     $("#hand").empty();
@@ -7789,8 +7801,11 @@ $(document).ready(function () {
       $("#player-" + game.players[0].id + "-letter-" + i).click(function () {
         var test = game.players[0].hand[i];
         word += test.toString();
+        currentLetter = test.toString();
         $("#" + id).remove();
-        game.players[0].hand.splice(i, 1, null);
+        var spliced = game.players[0].hand.splice(i, 1, null);
+        temp.push(spliced.toString());
+        console.log(temp);
         $("#submit-word").val(word);
       });
     };
@@ -7798,9 +7813,21 @@ $(document).ready(function () {
     for (var i = 0; i < game.players[0].hand.length; i++) {
       _loop(i);
     }
+    $(".tile").click(function () {
+      var x = $(this).attr("x-coord");
+      var y = $(this).attr("y-coord");
+      var letter = $(this).attr("letter");
+      if (letter != "") {
+        word += letter;
+        $("#submit-word").val(word);
+      } else {
+        $(this).text(currentLetter);
+        $(this).attr("letter", currentLetter);
+        currentLetter = "";
+      }
+    });
   });
   $("#submit").click(function () {
-    game.generateLetters(true);
     var request = new XMLHttpRequest();
     var url = "https://www.dictionaryapi.com/api/v1/references/collegiate/xml/" + word + "?key=c63d406f-5d72-44b1-8971-c20f33834083";
 
@@ -7809,26 +7836,69 @@ $(document).ready(function () {
         var response = convert.xml2js(this.response, { compact: true, spaces: 4 });
         if (game.players[0].getElements(response)) {
           $("#output").text("That's a word");
+          console.log(game.players[0].hand);
+          game.generateLetters(true);
+          console.log(game.players[0].hand);
+
+          var _loop2 = function _loop2(_i) {
+            var id = "player-" + game.players[0].id + "-letter-" + _i;
+            $("#hand").append("<li id=" + id + ">" + game.players[0].hand[_i] + "</li>");
+            $("#player-" + game.players[0].id + "-letter-" + _i).click(function () {
+              var test = game.players[0].hand[_i];
+              word += test.toString();
+              currentLetter = test.toString();
+              $("#" + id).remove();
+              var spliced = game.players[0].hand.splice(_i, 1, null);
+              temp.push(spliced.toString());
+              console.log(temp);
+              $("#submit-word").val(word);
+            });
+          };
+
+          for (var _i = 0; _i < game.players[0].hand.length; _i++) {
+            _loop2(_i);
+          }
         } else {
           $("#output").text("no");
+          console.log(game.players[0].hand);
+          var newHand = game.players[0].hand.filter(function (element) {
+            return element !== null;
+          });
+          for (var i = 0; i < temp.length; i++) {
+            newHand.push(temp[i]);
+          }
+          game.players[0].hand = newHand;
+          temp = [];
+          console.log(game.players[0].hand);
+          $("#hand").empty();
+
+          var _loop3 = function _loop3(_i2) {
+            var id = "player-" + game.players[0].id + "-letter-" + _i2;
+            $("#hand").append("<li id=" + id + ">" + game.players[0].hand[_i2] + "</li>");
+            $("#player-" + game.players[0].id + "-letter-" + _i2).click(function () {
+              var test = game.players[0].hand[_i2];
+              word += test.toString();
+              currentLetter = test.toString();
+              $("#" + id).remove();
+              var spliced = game.players[0].hand.splice(_i2, 1, null);
+              temp.push(spliced.toString());
+              console.log(temp);
+              $("#submit-word").val(word);
+            });
+          };
+
+          for (var _i2 = 0; _i2 < game.players[0].hand.length; _i2++) {
+            _loop3(_i2);
+          }
         }
       }
     };
     request.open("GET", url, true);
     request.send();
-
-    $("#submit-word").empty();
-    // for (let i = 0; i < game.players[0].hand.length; i++) {
-    //   let id = `player-${game.players[0].id}-letter-${i}`;
-    //   $("#hand").append(`<li id=${id}>${game.players[0].hand[i]}</li>`);
-    //   $(`#player-${game.players[0].id}-letter-${i}`).click(function(){
-    //     let test = game.players[0].hand[i];
-    //     word += test.toString();
-    //     $(`#${id}`).remove();
-    //     game.players[0].hand.splice(i, 1, null);
-    //     $("#submit-word").val(word);
-    //   });
-    // }
+    $("#submit-word").val("");
+    $("#hand").empty();
+    word = "";
+    currentLetter = "";
   });
 });
 
