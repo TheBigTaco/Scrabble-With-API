@@ -54,3 +54,6 @@ Scrabble Letters:
 10 points: Q ×1, Z ×1
 
 Add blanks if time
+requires:
+npm install --save xml-js
+npm install --global xml-js
